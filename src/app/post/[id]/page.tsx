@@ -2,19 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";  // Assuming RootState is set up
 import { BlogPost } from "@/types/blog";
-import { getPosts } from "@/lib/storage";
+import { useRouter } from "next/navigation";
 
 export default function ViewPost() {
   const { id } = useParams();
-  const [post, setPost] = useState<BlogPost | null>(null);
-
-  useEffect(() => {
-    if (id) {
-      const posts = getPosts();
-      setPost(posts.find((p) => p.id === id) || null);
-    }
-  }, [id]);
+  const post = useSelector((state: RootState) =>
+    state.blog.posts.find((post) => post.id === id)
+  );
 
   if (!post) return <p>Loading...</p>;
 
