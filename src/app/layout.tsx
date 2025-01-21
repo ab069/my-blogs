@@ -1,4 +1,4 @@
-import { ReduxProvider } from "./redux/provider";
+import { ReduxProvider } from "./provider";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

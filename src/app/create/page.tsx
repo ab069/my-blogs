@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { addPost } from "../redux/slices/blogSlice";
+import { addPost } from "../../lib/features/blogSlice";
   // Redux action for adding a post
 import { BlogPost } from "@/types/blog";
 import { v4 as uuidv4 } from "uuid";

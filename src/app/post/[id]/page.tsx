@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";  // Assuming RootState is set up
+import { RootState } from "../../../lib/store";  // Assuming RootState is set up
 import { BlogPost } from "@/types/blog";
 import { useRouter } from "next/navigation";
 

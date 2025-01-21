@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import { setPosts, deletePost } from "./redux/slices/blogSlice";
+import { RootState } from "../lib/store";
+import { setPosts, deletePost } from "../lib/features/blogSlice";
 
 import Link from "next/link";
 
