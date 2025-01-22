@@ -26,6 +26,8 @@ const blogSlice = createSlice({
     setPosts: (state, action: PayloadAction<BlogPost[]>) => {
       state.posts = action.payload;
     },
+    
+
   },
 });
 

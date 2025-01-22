@@ -4,5 +4,6 @@ export interface BlogPost {
   description: string;
   content: string;
   tags?: string[];
+  image: string; 
   createdAt: string;
 }
