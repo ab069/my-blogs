@@ -34,10 +34,10 @@ export default function BlogCard({ post }: { post: BlogPost }) {
   <div className="p-4">
     <h6 className="mb-2 text-slate-800 text-xl font-semibold">
     {post.title}    </h6>
-    <p className="text-slate-600 leading-normal font-light">
-    {post.description}
-    </p>
-       <p className="mt-2 text-sm text-gray-500">Tags: {post.tags?.join(", ")}</p>
+    {post.description && (  <p className="text-slate-600 leading-normal font-light">
+    {post.description} </p>)}
+   
+    {post.tags && (   <p className="mt-2 text-sm text-gray-500">Tags: {post.tags?.join(", ")}</p>)}
 
   </div>
   <div className="px-4 pb-4 pt-0 mt-2">
