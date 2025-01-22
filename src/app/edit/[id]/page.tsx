@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect,useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePost } from "@/lib/features/blogSlice"; // ✅ Corrected action name
 import { useRouter, useParams } from "next/navigation";
@@ -36,14 +36,14 @@ export default function EditPost() {
   const [preview, setPreview] = useState(post?.image || ""); // Default to existing image
 
   // Handle image selection
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = useCallback( (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setImage(file);
       const objectURL = URL.createObjectURL(file);
       setPreview(objectURL);
     }
-  };
+  }, []);
 
   // Cleanup URL.createObjectURL to free memory
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function EditPost() {
   }, [preview, image]);
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =useCallback( (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description || !content) {
       return alert("All fields are required.");
@@ -75,7 +75,7 @@ export default function EditPost() {
     );
 
     router.push("/");
-  };
+  }, [dispatch]);
 
   if (!post) return null; // Prevents rendering if post is not found
 

@@ -16,17 +16,15 @@ export default function CreatePost() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Handle Image Selection & Preview
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const previewURL = URL.createObjectURL(file);
+      setPreview(previewURL);
       setImage(file);
-      const objectURL = URL.createObjectURL(file);
-      setPreview(objectURL);
     }
   };
 
-  // Cleanup URL.createObjectURL to free memory
   useEffect(() => {
     return () => {
       if (preview) {
@@ -35,30 +33,51 @@ export default function CreatePost() {
     };
   }, [preview]);
 
-  // Handle Form Submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !description || !content || !image) {
       return alert("All fields are required, including an image.");
     }
-
-    // Store only the image preview URL in Redux
-    dispatch(
-      addPost({
-        id: Date.now().toString(),
-        title,
-        description,
-        content,
-        tags: tags.split(",").map((tag) => tag.trim()),
-        image: preview, // Storing the image preview URL
-        createdAt: new Date().toISOString(),
-      })
-    );
-
-    // Redirect back to home
-    router.push("/");
+  
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = async () => {
+        const fileName = `${Date.now()}-${image.name}`;
+        const fileContent = reader.result;
+  
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileName, fileContent }),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to upload image.");
+        }
+  
+        const { url } = await response.json();
+  
+        dispatch(
+          addPost({
+            id: Date.now().toString(),
+            title,
+            description,
+            content,
+            tags: tags.split(",").map((tag) => tag.trim()),
+            image: url,
+            createdAt: new Date().toISOString(),
+          })
+        );
+  
+        router.push("/");
+      };
+    } catch (err) {
+      alert("Error uploading image.");
+      console.error(err);
+    }
   };
-
+  
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Create New Blog Post</h1>
@@ -71,7 +90,7 @@ export default function CreatePost() {
           className="w-full p-2 border rounded"
           required
         />
-        
+
         <input
           type="text"
           placeholder="Description"
@@ -90,7 +109,6 @@ export default function CreatePost() {
           required
         />
 
-        {/* Image Upload Input */}
         <input
           type="file"
           accept="image/*"
@@ -99,7 +117,6 @@ export default function CreatePost() {
           required
         />
 
-        {/* Show Image Preview */}
         {preview && (
           <Image
             src={preview}

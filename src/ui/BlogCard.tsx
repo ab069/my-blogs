@@ -3,17 +3,34 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { deletePost } from "@/lib/features/blogSlice";
 import { BlogPost } from "@/types/blog";
+import { useCallback } from "react";
 
 export default function BlogCard({ post }: { post: BlogPost }) {
   const dispatch = useDispatch();
 
-  // Handle Delete Post
-  const handleDelete = () => {
+  const handleDelete = useCallback( async () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this post?");
     if (confirmDelete) {
+      // Make an API call to delete the image
+      if (post.image) {
+        try {
+          await fetch(`/api/delete-image`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ imagePath: post.image }),
+          });
+        } catch (err) {
+          console.error("Failed to delete image:", err);
+        }
+      }
+  
+      // Dispatch Redux action to delete the post
       dispatch(deletePost(post.id));
     }
-  };
+  }, [post.image, post.id, dispatch]);
+  
 
   return (
 
